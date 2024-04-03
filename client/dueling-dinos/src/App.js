@@ -12,6 +12,8 @@ const defaultState = atom(
     {"page": "home"}
 )
 
+const vote_url = 'http://192.168.1.115:1337/vote/';
+
 function styler (icon) {
     return ({backgroundImage: `url(${icon})`,
              backgroundSize: 'contain',
@@ -35,6 +37,15 @@ function VideoPage({state, setState}){
 }
 
 function ContentPage({state, setState}){
+    async function logVote(vote){
+        const request  = await fetch(vote_url,
+                                     {method: "POST",
+                                      mode: "cors",
+                                      headers: {'Content-Type': 'application/json'},
+                                      body: JSON.stringify({"vote": vote})});
+        const response = await request;
+        console.log(response);
+    }
     return (<>
             <h2> {state.page} </h2>
             <div className='HomePage-Buttons flex-container row' style={{'display':'flex'}}>
@@ -43,7 +54,12 @@ function ContentPage({state, setState}){
             style={styler(BackImage)}
             ></div>
             <div className='Prompt-Button'
-            onClick={(event)=>setState({... state, 'page': 'video'})}
+            onClick={
+                () => {console.log('voting ', state.page, ": ...")
+                       logVote(state.page)
+                       setState({... state, 'page': 'video'})}
+
+            }
             style={styler(GoImage)}
             ></div>
             </div>
