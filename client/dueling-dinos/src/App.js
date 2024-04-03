@@ -12,7 +12,7 @@ const defaultState = atom(
     {"page": "home"}
 )
 
-const vote_url = 'http://192.168.1.115:1337/vote/';
+const vote_url = process.env.SERVER_URL + ":" + process.env.SERVER_PORT + "/vote";
 
 function styler (icon) {
     return ({backgroundImage: `url(${icon})`,
