@@ -11,7 +11,7 @@ const defaultState = atom(
     {"page": "home"}
 )
 
-const vote_url = process.env.REACT_APP_SERVER_URL + ":" + process.env.REACT_APP_SERVER_PORT + "/vote";
+const vote_url =  process.env.REACT_APP_SERVER_URL + ":" + process.env.REACT_APP_SERVER_PORT + "/vote";
 
 function styler (icon) {
     return ({backgroundImage: `url(${icon})`,
@@ -43,7 +43,6 @@ function ContentPage({state, setState}){
                                       headers: {'Content-Type': 'application/json'},
                                       body: JSON.stringify({"vote": vote})});
         const response = await request;
-        console.log(response);
     }
     return (<>
             <h2> {state.page} </h2>
@@ -54,8 +53,7 @@ function ContentPage({state, setState}){
             ></div>
             <div className='Prompt-Button'
             onClick={
-                () => {console.log('voting ', state.page, ": ...")
-                       logVote(state.page)
+                () => {logVote(state.page)
                        setState({...state, 'page': 'video'})}
 
             }

@@ -12,7 +12,6 @@ const outputFile = process.env.OUTPUT_FILENAME || 'dinovotes';
 const fields = ['DateTime', 'Vote'];
 
 
-let csv = (data) => {return (json2csv({data: data, fields: fields, header: false}) + newline)};
 let filename = outputFile + '.csv';
 fs.writeFile(filename, fields + newline, (_)=> {} );
 
@@ -25,10 +24,12 @@ app.get('/votes', (req, res) => {
 });
 app.post('/vote', (req, res) => {
     try{
-        fs.appendFile(filename, csv([{DateTime: new Date(), Vote: req.body.vote}]), (_) => {});
+        fs.appendFileSync(filename, [new Date(), req.body.vote].join(",") + newline , (_) => {});
+        res.send(200, "Vote recorded successfully: ", req.body.vote);
     } catch (err) {
         throw err;
         console.error('problem writing to file ', filename, ':\n', error);
+        res.send(500, "Error occurred while recording vote");
     }
 });
 
