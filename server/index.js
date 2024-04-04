@@ -1,19 +1,35 @@
+const dotenv = require('dotenv').config();
 const express = require ('express');
 const app = express();
 const cors = require('cors');
-const server_port = process.env.SERVER_PORT || 1337;
+const server_port = process.env.SERVER_PORT;
 const fs = require('fs');
+const json2csv = require('json2csv').parse;
+const newline = '\r\n';
+
+const voteFields = ['DateTime', 'Vote'];
+const outputFile = process.env.OUTPUT_FILENAME || 'dinovotes';
+const fields = ['DateTime', 'Vote'];
+
+
+let csv = (data) => {return (json2csv({data: data, fields: fields, header: false}) + newline)};
+let filename = outputFile + '.csv';
+fs.writeFile(filename, fields + newline, (_)=> {} );
 
 app.use(cors());
 app.use(express.json());
 
-app.get('/vote', (req, res) => {
+app.get('/votes', (req, res) => {
     res.send("VOTE GOTTED");
+    //get the current votes counts from the worksheet
 });
 app.post('/vote', (req, res) => {
-    let vote = req.body.vote + ";";
-    fs.writeFile('votes.log', vote, {'flag':'a'}, (err) => {err && console.error(err)} );
-    res.send('Vote Logged');
+    try{
+        fs.appendFile(filename, csv([{DateTime: new Date(), Vote: req.body.vote}]), (_) => {});
+    } catch (err) {
+        throw err;
+        console.error('problem writing to file ', filename, ':\n', error);
+    }
 });
 
 

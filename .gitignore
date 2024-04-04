@@ -1,23 +1,26 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
-/.pnp
-.pnp.js
+/client/dueling-dinosaurs/node_modules
+/client/dueling-dinosaurs/.pnp
+/client/dueling-dinosaurs/.pnp.js
 
 # testing
-/coverage
+/client/dueling-dinosaurs/coverage
 
 # production
-/build
+/client/dueling-dinosaurs/build
 
 # misc
-.DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+/client/dueling-dinosaurs/.DS_Store
+/client/dueling-dinosaurs/.env.local
+/client/dueling-dinosaurs/.env.development.local
+/client/dueling-dinosaurs/.env.test.local
+/client/dueling-dinosaurs/.env.production.local
 
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+/client/dueling-dinosaurs/npm-debug.log*
+/client/dueling-dinosaurs/yarn-debug.log*
+/client/dueling-dinosaurs/yarn-error.log*
+
+/server/.env
+/client/dueling-dinosaurs/.env

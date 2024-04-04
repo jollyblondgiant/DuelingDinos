@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import { atom, useAtom } from 'jotai';
 import DuelImage from './images/Duel.png';
@@ -12,7 +11,7 @@ const defaultState = atom(
     {"page": "home"}
 )
 
-const vote_url = process.env.SERVER_URL + ":" + process.env.SERVER_PORT + "/vote";
+const vote_url = process.env.REACT_APP_SERVER_URL + ":" + process.env.REACT_APP_SERVER_PORT + "/vote";
 
 function styler (icon) {
     return ({backgroundImage: `url(${icon})`,
@@ -29,7 +28,7 @@ function VideoPage({state, setState}){
             This is an embedded video.
             <div className='HomePage-Buttons flex-container row' style={{'display':'flex'}}>
             <div className='Prompt-Button'
-            onClick={(event)=>setState({... state, 'page': 'home'})}
+            onClick={(event)=>setState({...state, 'page': 'home'})}
             style={styler(BackImage)}
             ></div>
             </div>
@@ -50,14 +49,14 @@ function ContentPage({state, setState}){
             <h2> {state.page} </h2>
             <div className='HomePage-Buttons flex-container row' style={{'display':'flex'}}>
             <div className='Prompt-Button'
-            onClick={(event)=>setState({... state, 'page': 'home'})}
+            onClick={(event)=>setState({...state, 'page': 'home'})}
             style={styler(BackImage)}
             ></div>
             <div className='Prompt-Button'
             onClick={
                 () => {console.log('voting ', state.page, ": ...")
                        logVote(state.page)
-                       setState({... state, 'page': 'video'})}
+                       setState({...state, 'page': 'video'})}
 
             }
             style={styler(GoImage)}
@@ -71,19 +70,19 @@ function HomePage({state, setState}){
             <div className='HomePage-Buttons flex-container row' style={{'display':'flex'}}>
             <div className='Prompt-Button'
             style={styler(DuelImage)}
-            onClick={(event)=>setState({... state, 'page': 'duel'})}
+            onClick={(event)=>setState({...state, 'page': 'duel'})}
             ></div>
             <div className='Prompt-Button'
             style={styler(DinnerImage)}
-            onClick={(event)=>setState({... state, 'page': 'dinner'})}
+            onClick={(event)=>setState({...state, 'page': 'dinner'})}
             ></div>
             <div className='Prompt-Button'
             style={styler(DisasterImage)}
-            onClick={(event)=>setState({... state, 'page': 'disaster'})}
+            onClick={(event)=>setState({...state, 'page': 'disaster'})}
             ></div>
             <div className='Prompt-Button'
             style={styler(SomeThingElseImage)}
-            onClick={(event)=>setState({... state, 'page': 'somethingElse'})}
+            onClick={(event)=>setState({...state, 'page': 'somethingElse'})}
             ></div>
             </div>
 
