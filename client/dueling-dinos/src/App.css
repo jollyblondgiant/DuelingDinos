@@ -1,15 +1,84 @@
 :root {
-    --primary: #054035;
-    --secondary: #e68210;
-    --tertiary: #10e685;
-    --quarternary: #037070;
-    --danger: gray;
-
-
+    --primary: #5abb62;
+    --secondary: #ea8520;
+    --tertiary: #021c18;
 }
 
+@font-face{
+    font-family: HalyardDis;
+    font-weight: bold;
+    src: url(./fonts/HalyardDis-Bd.otf) format("truetype");
+}
+@font-face{
+    font-family: HalyardDis;
+    font-style: italic;
+    src: url(./fonts/HalyardDis-It.otf) format("truetype");
+}
+@font-face{
+    font-family: HalyardDis;
+    font-weight: bold;
+    font-style: italic;
+    src: url(./fonts/HalyardDis-BdIt.otf) format("truetype");
+}
+@font-face{
+    font-family: HalyardDisBlack;
+    src: url(./fonts/HalyardDisBlack.otf) format("truetype");
+}
+@font-face{
+    font-family: HalyardDisBlack;
+    font-style: italic;
+    src: url(./fonts/HalyardDisBlack-It.otf) format("truetype");
+}
+@font-face{
+    font-family: HalyardDisBook;
+    src: url(./fonts/HalyardDisBook.otf) format("truetype");
+}
+@font-face{
+    font-family: HalyardDisBook;
+    font-style: italic;
+    src: url(./fonts/HalyardDisBook-It.otf) format("truetype");
+}
+@font-face{
+    font-family: HalyardDisExLt;
+    src: url(./fonts/HalyardDisExLt.otf) format("truetype");
+}
+@font-face{
+    font-family: HalyardDisExLt;
+    font-style: italic;
+    src: url(./fonts/HalyardDisExLt-It.otf) format("truetype");
+}
+@font-face{
+    font-family: HalyardDisLt;
+    src: url(./fonts/HalyardDisLt.otf) format("truetype");
+}
+@font-face{
+    font-family: HalyardDisLT;
+    font-style: italic;
+    src: url(./fonts/HalyardDisLt-It.otf) format("truetype");
+}
+@font-face{
+    font-family: HalyardDisMed;
+    src: url(./fonts/HalyardDisMed.otf) format("truetype");
+}
+@font-face{
+    font-family: HalyardDisMed;
+    font-style: italic;
+    src: url(./fonts/HalyardDisMed-It.otf) format("truetype");
+}
+@font-face{
+    font-family: HalyardDisSemBd;
+    src: url(./fonts/HalyardDisSemBd.otf) format("truetype");
+}
+@font-face{
+    font-family: HalyardDisSemBd;
+    font-style: italic;
+    src: url(./fonts/HalyardDisSemBd-It.otf) format("truetype");
+}
+
+
+
 body{
-    background-color: var(--primary);
+    background-image: url(./images/Voting_Background.jpg);
 }
 
 header{
@@ -26,17 +95,15 @@ header div {
 }
 
 .Prompt-Button {
-    margin: auto;
-    color: white;
-    border-radius: 20%;
     padding: 1%;
-
+    margin: auto 0rem;
 }
 
 
 .HomePage-Buttons{
     background-color: transparent;
-
+    align-content: center;
+    justify-content: center;
     position: absolute;
     bottom: 0;
     width: 100%;
@@ -71,10 +138,20 @@ header div {
     margin: auto 10%;
 }
 
-.Content{}
+.Content{
+    align-items: center;
+}
+
+
+.Content-SubHead {
+    align-items: center;
+    justify-content: center;
+}
 
 .Content-text{
+    width: 50%;
+    margin: 1rem auto 1rem 1rem;
     border: 1px solid var(--secondary);
     color: white;
-    background-color: var(--quarternary);
+    background-color: var(--tertiary);
 }

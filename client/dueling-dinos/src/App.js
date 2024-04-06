@@ -1,11 +1,21 @@
 import './App.css';
 import { atom, useAtom } from 'jotai';
-import DuelImage from './images/Duel.png';
-import DinnerImage from './images/Dinner.png';
-import DisasterImage from './images/Disaster.png';
-import SomeThingElseImage from './images/Somethingelse.png';
-import BackImage from './images/back.svg';
-import GoImage from './images/go.svg';
+import DuelImage from './images/DUEL.png';
+import SpDuelImage from './images/DUEL Sp.png';
+import DinnerImage from './images/DINNER.png';
+import SpDinnerImage from './images/DINNER Sp.png';
+import DisasterImage from './images/DISASTER.png';
+import SpDisasterImage from './images/DISASTER Sp.png';
+import BackImage from './images/BACK.png';
+import SpBackImage from './images/BACK Sp.png';
+import VoteImage from './images/VOTE.png';
+import SpVoteImage from './images/VOTE Sp.png';
+import StartOverImage from './images/START_OVER.png';
+import SpStartOverImage from './images/START OVER Sp.png';
+import HomeImage from './images/HOME.png';
+import EnglishImage from './images/ENGLISH.png';
+import EspanolImage from './images/ESPANOL.png';
+
 
 const defaultState = atom(
     {"page": "home",
@@ -14,8 +24,8 @@ const defaultState = atom(
 )
 
 const locales = {
-    "locale": {"en": "Espanol",
-               "es": "English"},
+    "locale": {"en": "EspanolImage",
+               "es": "EnglishImage"},
     "heroText": {"en": "HOW DID THEY DIE?",
                  "es": "¿HOW DID THEY DIE BUT IN SPANISH?"},
     "homePrompt0": {"en": "You've seen some evidence.",
@@ -29,9 +39,9 @@ const locales = {
     "disaster": {"en": "Disaster",
                  "es": "Disaster, but in Spanish"},
     "back": {"en": "Back",
-             "es":"Back"},
+             "es":"Atrás"},
     "vote":{"en":"Vote",
-            "es": "Vote"},
+            "es": "Votar"},
     "video": {"en": "Video",
               "es": "Video, but in Spanish"},
     "duelText":{"en": "The injuries to both dinosaurs may be evidence that they died in battle. But we need to establish exactly when and how the injuries occurred to be sure.",
@@ -42,6 +52,12 @@ const locales = {
                     "es": "ESP<This is placeholder Disaster Text.>"},
     "voteConfirm":{"en": "If this is how you interpret the evidence, click VOTE below.",
                    "es": "ESP<If this is how you interpret the evidence, click VOTE below.>"},
+    "duelSubText":{"en": "This is duel subtext",
+                   "es": "This is duel subtext, but in spanish."},
+    "dinnerSubText":{"en": "this is dinner subtext",
+                   "es": "this is dinner subtext but in spanish"},
+    "disasterSubText":{"en": "this is disaster subtext",
+                   "es": "this is disaster subtext but in spanish"},
 }
 
 const vote_url =  process.env.REACT_APP_SERVER_URL + ":" + process.env.REACT_APP_SERVER_PORT + "/vote";
@@ -62,8 +78,12 @@ function VideoPage({state, setState}){
             <div className='HomePage-Buttons flex-container row' style={{'display':'flex'}}>
             <div className='Prompt-Button'
             onClick={(event)=>setState({...state, 'page': 'home'})}
-            style={styler(BackImage)}
+            style={styler(StartOverImage)}
             ></div>
+            </div>
+            <div className="VotePage-Button"
+            onClick={(event)=>setState({...state, 'page': 'home', 'vote':null})}>
+            {locales.back[state.locale]}
             </div>
            </>);
 }
@@ -79,12 +99,22 @@ function ContentPage({state, setState}){
     }
     const content = () => {
         switch (state.vote){
-        case "duel":  return ({...styler(DuelImage), margin: 0});
-        case "dinner": return ({...styler(DinnerImage), margin: 0});
-        case "disaster": return({...styler(DisasterImage), margin: 0})
+        case "duel":  return ({...styler(DuelImage), margin: '1rem', width: '30%'});
+        case "dinner": return ({...styler(DinnerImage), margin: '1rem', width: '30%'});
+        case "disaster": return({...styler(DisasterImage), margin: '1rem', width: '30%'})
+        }
+    }
+    const subtext = () => {
+        switch (state.vote){
+        case "duel":  return (locales.duelSubText);
+        case "dinner": return (locales.dinnerSubText);
+        case "disaster": return(locales.disasterSubText);
         }
     }
     return (<>
+            <div className="Content-SubHead" style={{'display': 'flex'}}>
+            <p>{subtext()[state.locale]}</p>
+            </div>
             <div className="Content flex-container" style={{'display':'flex'}}>
             <div className='Prompt-Button'
             style={content()}
@@ -120,7 +150,7 @@ function HomePage({state, setState}){
             </div>
             <div className='HomePage-Buttons flex-container row' style={{'display':'flex'}}>
             <div className='Prompt-Button'
-            style={styler(DuelImage)}
+            style={true && styler(DuelImage)}
             onClick={(event)=>setState({...state, 'page': 'content', 'vote':'duel'})}
             ></div>
             <div className='Prompt-Button'
@@ -156,15 +186,31 @@ function Header({state, setState}){
         default: return("video text");
         }
     }
+    const headerLocale = () => {
+        switch(state.locale){
+        case "en": return (EspanolImage);
+        case "es": return (EnglishImage);
+        }
+    }
     return (<>
             <header>
             <div
             onClick={(event)=>setState({...state, 'page': 'home', 'vote': null})}
-            > Home </div>
+            style={{backgroundImage: `url(${HomeImage})`,
+                    backgroundSize: 'contain',
+                    backgroundPosition: 'center',
+                    width: '2rem',
+                    height: '2rem',
+                    backgroundRepeat: 'no-repeat',
+                   }}
+            ></div>
             <div>
             {headerText(state.page)}
             </div>
             <div
+            style={{...styler(headerLocale()),
+                    width: '4rem',
+                    height: '2rem'}}
             onClick={() => {
                 switch(state.locale){
                 case "en": return(
@@ -175,7 +221,7 @@ function Header({state, setState}){
                 );
                 }
             }}
-            >{locales.locale[state.locale]}</div>
+            ></div>
             </header>
             </>
     )
