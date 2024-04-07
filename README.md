@@ -13,4 +13,8 @@ Requirements:
 10) npm run
 11) navigate to your server url, port 3000.
 
+before deployment to production, be sure to uncomment the line in client/dueling-dinosaurs/src/App.css that sets the 'cursor' to 'none'
+
+when adding new video .mp4 files to the repo, be sure to force their codecs:
+ffmpeg -i input.mp4 -c:v libx24 -c:a -strict 2 output.mp4
    

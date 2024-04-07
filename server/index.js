@@ -13,11 +13,11 @@ const fields = ['DateTime', 'Vote'];
 
 
 let filename = outputFile + '.csv';
-fs.writeFile(filename, fields + newline, (_)=> {} );
+
+!fs.existsSync(filename) && fs.writeFile(filename, fields + newline, (_)=> {} );
 
 app.use(cors());
 app.use(express.json());
-
 app.get('/votes', (req, res) => {
     res.send("VOTE GOTTED");
     //get the current votes counts from the worksheet

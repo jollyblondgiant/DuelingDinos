@@ -79,6 +79,7 @@
 
 body{
     background-image: url(./images/Voting_Background.jpg);
+    /* cursor: none; UNCOMMENT FOR PRODUCTION */
 }
 
 header{
@@ -126,11 +127,11 @@ header div {
 
 .VotePage-Buttons{
     background-color: transparent;
-
+    width: 50rem;
     position: absolute;
     bottom: 0;
     margin: 1%;
-    right: 2rem;
+    right: -1rem;
 
 }
 

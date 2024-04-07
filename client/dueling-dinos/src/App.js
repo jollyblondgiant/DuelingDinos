@@ -1,29 +1,55 @@
 import './App.css';
 import { atom, useAtom } from 'jotai';
+import {useEffect, useRef } from 'react';
+
+import videojs from 'video.js';
+import 'video.js/dist/video-js.css';
+
+import DuelVideo from './video/duel.mp4';
+import DinnerVideo from './video/dinner.mp4';
+import DisasterVideo from './video/disaster.mp4';
+
 import DuelImage from './images/DUEL.png';
-import SpDuelImage from './images/DUEL Sp.png';
+import SpDuelImage from './images/DuelSp.png';
 import DinnerImage from './images/DINNER.png';
-import SpDinnerImage from './images/DINNER Sp.png';
+import SpDinnerImage from './images/DinnerSp.png';
 import DisasterImage from './images/DISASTER.png';
-import SpDisasterImage from './images/DISASTER Sp.png';
+import SpDisasterImage from './images/DisasterSp.png';
 import BackImage from './images/BACK.png';
-import SpBackImage from './images/BACK Sp.png';
+import SpBackImage from './images/BackSp.png';
 import VoteImage from './images/VOTE.png';
-import SpVoteImage from './images/VOTE Sp.png';
+import SpVoteImage from './images/VoteSp.png';
 import StartOverImage from './images/START_OVER.png';
-import SpStartOverImage from './images/START OVER Sp.png';
+import SpStartOverImage from './images/StartOverSp.png';
 import HomeImage from './images/HOME.png';
 import EnglishImage from './images/ENGLISH.png';
 import EspanolImage from './images/ESPANOL.png';
 
+const req_url =  process.env.REACT_APP_SERVER_URL + ":" + process.env.REACT_APP_SERVER_PORT;
 
 const defaultState = atom(
     {"page": "home",
      "locale": "en",
-     "vote": null,}
+     "vote": null,
+     "seeHeader": true,
+     "seeHome": false}
 )
 
 const locales = {
+    "backImage":{"en": BackImage,
+                 "es" : SpBackImage},
+    "voteImage":{"en": VoteImage,
+                 "es": SpVoteImage},
+    "localeImage":{"en": EspanolImage,
+                   "es": EnglishImage},
+    "duelImage":{"en": DuelImage,
+                 "es": SpDuelImage},
+    "dinnerImage":{"en": DinnerImage,
+                   "es": SpDinnerImage},
+    "disasterImage":{"en": DisasterImage,
+                     "es": SpDisasterImage},
+    "startOverImage":{"en": StartOverImage,
+                      "es": SpStartOverImage},
     "locale": {"en": "EspanolImage",
                "es": "EnglishImage"},
     "heroText": {"en": "HOW DID THEY DIE?",
@@ -55,12 +81,10 @@ const locales = {
     "duelSubText":{"en": "This is duel subtext",
                    "es": "This is duel subtext, but in spanish."},
     "dinnerSubText":{"en": "this is dinner subtext",
-                   "es": "this is dinner subtext but in spanish"},
+                     "es": "this is dinner subtext but in spanish"},
     "disasterSubText":{"en": "this is disaster subtext",
-                   "es": "this is disaster subtext but in spanish"},
+                       "es": "this is disaster subtext but in spanish"},
 }
-
-const vote_url =  process.env.REACT_APP_SERVER_URL + ":" + process.env.REACT_APP_SERVER_PORT + "/vote";
 
 function styler (icon) {
     return ({backgroundImage: `url(${icon})`,
@@ -72,25 +96,86 @@ function styler (icon) {
             })
 }
 
+const VideoPlayer = (props) => {
+    const videoRef = useRef(null);
+    const playerRef = useRef(null);
+    const {options, onReady} = props;
+    useEffect(()=>{
+        if(!playerRef.current){
+            const videoElement = document.createElement("video-js")
+            videoElement.classList.add('vjs-big-play-centered');
+            videoRef.current.appendChild(videoElement);
+            const player = playerRef.current = videojs(videoElement, options, () => {
+                videojs.log('player is ready');
+                onReady && onReady(player);
+            });
+        }
+    }, [options, videoRef])
+    useEffect(()=>{
+        const player = playerRef.current;
+        return () => {
+            if (player && !player.isDisposed()){
+                player.dispose();
+                playerRef.current = null;
+            }};
+    }, [playerRef])
+    return (
+            <div data-vjs-player>
+              <div ref={videoRef}/>
+            </div>
+    )
+};
+
 function VideoPage({state, setState}){
+    const playerRef = useRef(null);
+    const video = () => {
+        switch(state.vote){
+        case "duel": return DuelVideo;
+        case "dinner": return DinnerVideo
+        case "disaster": return DisasterVideo}
+    }
+    const videoJsOptions = {
+        autoplay: true,
+        controls: false,
+        responsive: true,
+        muted: true,
+        fluid: true,
+        sources: [{
+            src: video(),
+            type: 'video/mp4'
+        }]
+    };
+    const handlePlayerReady = (player) => {
+        player.on('waiting', ()=> {
+            setState({...state, 'seeHome': false})})
+
+        player.on('ended', ()=>{
+            setState({...state, 'seeHome': true})
+            const timeout = setTimeout(()=>{
+                setState({...state, 'page': 'home',
+                          'vote':null,
+                          'seeHeader':true})
+            }, 90000)})
+    }
     return (<>
-            This is an embedded video.
+            <VideoPlayer
+            options={videoJsOptions} onReady={handlePlayerReady} />
+            {state.seeHome &&
             <div className='HomePage-Buttons flex-container row' style={{'display':'flex'}}>
             <div className='Prompt-Button'
-            onClick={(event)=>setState({...state, 'page': 'home'})}
-            style={styler(StartOverImage)}
+             onClick={(event)=>setState({...state, 'page': 'home',
+                                         'vote':null,
+                                         'seeHeader':true})}
+            style={styler(locales.startOverImage[state.locale])}
             ></div>
             </div>
-            <div className="VotePage-Button"
-            onClick={(event)=>setState({...state, 'page': 'home', 'vote':null})}>
-            {locales.back[state.locale]}
-            </div>
-           </>);
+            }
+            </>);
 }
 
 function ContentPage({state, setState}){
     async function logVote(vote){
-        const request  = await fetch(vote_url,
+        const request  = await fetch(req_url + "/vote",
                                      {method: "POST",
                                       mode: "cors",
                                       headers: {'Content-Type': 'application/json'},
@@ -99,9 +184,9 @@ function ContentPage({state, setState}){
     }
     const content = () => {
         switch (state.vote){
-        case "duel":  return ({...styler(DuelImage), margin: '1rem', width: '30%'});
-        case "dinner": return ({...styler(DinnerImage), margin: '1rem', width: '30%'});
-        case "disaster": return({...styler(DisasterImage), margin: '1rem', width: '30%'})
+        case "duel":  return ({...styler(locales.duelImage[state.locale]), margin: '1rem', width: '30%'});
+        case "dinner": return ({...styler(locales.dinnerImage[state.locale]), margin: '1rem', width: '30%'});
+        case "disaster": return({...styler(locales.disasterImage[state.locale]), margin: '1rem', width: '30%'})
         }
     }
     const subtext = () => {
@@ -127,15 +212,16 @@ function ContentPage({state, setState}){
             </div>
             <div className="VotePage-Buttons flex-container" style={{'display':'flex'}}>
             <div className="VotePage-Button"
-            onClick={(event)=>setState({...state, 'page': 'home', 'vote':null})}>
-            {locales.back[state.locale]}
-            </div>
+            style={styler(locales.backImage[state.locale])}
+            onClick={(event)=>setState({...state, 'page': 'home', 'vote':null})}
+            ></div>
             <div className="VotePage-Button"
             onClick={()=> {logVote(state.vote);
-                           setState({...state, 'page':'video'});
+                           setState({...state, 'page':'video', 'seeHeader': false});
                           }
                     }
-            >{locales.vote[state.locale]}
+            style={styler(locales.voteImage[state.locale])}
+            >
             </div>
             </div>
             </>);
@@ -150,15 +236,15 @@ function HomePage({state, setState}){
             </div>
             <div className='HomePage-Buttons flex-container row' style={{'display':'flex'}}>
             <div className='Prompt-Button'
-            style={true && styler(DuelImage)}
+            style={styler(locales.duelImage[state.locale])}
             onClick={(event)=>setState({...state, 'page': 'content', 'vote':'duel'})}
             ></div>
             <div className='Prompt-Button'
-            style={styler(DinnerImage)}
+            style={styler(locales.dinnerImage[state.locale])}
             onClick={(event)=>setState({...state, 'page': 'content', 'vote':'dinner'})}
             ></div>
             <div className='Prompt-Button'
-            style={styler(DisasterImage)}
+            style={styler(locales.disasterImage[state.locale])}
             onClick={(event)=>setState({...state, 'page':'content','vote': 'disaster'})}
             ></div>
             </div>
@@ -186,12 +272,6 @@ function Header({state, setState}){
         default: return("video text");
         }
     }
-    const headerLocale = () => {
-        switch(state.locale){
-        case "en": return (EspanolImage);
-        case "es": return (EnglishImage);
-        }
-    }
     return (<>
             <header>
             <div
@@ -208,7 +288,7 @@ function Header({state, setState}){
             {headerText(state.page)}
             </div>
             <div
-            style={{...styler(headerLocale()),
+            style={{...styler(locales.localeImage[state.locale]),
                     width: '4rem',
                     height: '2rem'}}
             onClick={() => {
@@ -224,14 +304,14 @@ function Header({state, setState}){
             ></div>
             </header>
             </>
-    )
+           )
 }
 
 function App() {
     const [state, setState] = useAtom(defaultState);
     return (
             <>
-            <Header state={state} setState={setState}/>
+            {state.seeHeader && <Header state={state} setState={setState}/>}
             <Main state={state} setState={setState}/>
             </>
     );
