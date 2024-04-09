@@ -5,6 +5,7 @@ const cors = require('cors');
 const server_port = process.env.SERVER_PORT;
 const fs = require('fs');
 const json2csv = require('json2csv').parse;
+const { parse } = require('csv-parse/sync');
 const newline = '\r\n';
 
 const voteFields = ['DateTime', 'Vote'];
@@ -18,9 +19,26 @@ let filename = outputFile + '.csv';
 
 app.use(cors());
 app.use(express.json());
-app.get('/votes', (req, res) => {
-    res.send("VOTE GOTTED");
-    //get the current votes counts from the worksheet
+app.get('/votes', (req, response) => {
+    fs.readFile(filename, 'UTF-8', (err, csv)=>{
+        const votes = parse(csv, {
+            columns: true,
+        })
+        const result = votes.reduce((acc, vote) => {
+            switch(vote.Vote){
+            case 'duel': return (
+                {...acc, 'duel': [acc.duel[0] + 1,
+                                  (( acc.duel[0] + 1 )/votes.length).toPrecision(3)]})
+            case 'dinner': return (
+                {...acc, 'dinner': [acc.dinner[0] + 1,
+                                    ((acc.dinner[0] + 1) / votes.length).toPrecision(3)]})
+            case 'disaster': return (
+                {...acc, 'disaster': [acc.disaster[0] + 1,
+                                      ((acc.disaster[0] + 1) / votes.length).toPrecision(3)]})
+            }
+        }, {'duel': [0, 0], 'dinner': [0, 0], 'disaster': [0, 0]})
+        response.send(result);
+    })
 });
 app.post('/vote', (req, res) => {
     try{

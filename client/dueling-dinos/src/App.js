@@ -229,10 +229,12 @@ function ContentPage({state, setState}){
 
 function HomePage({state, setState}){
     return (<>
-            <div className='HomePage-Prompt flex-container' style={{'display':'flex'}}>
+            <div className='HomePage-Prompt'>
+            <div>
             <p>{locales.homePrompt0[state.locale]}</p>
             <br/>
             <p>{locales.homePrompt1[state.locale]}</p>
+            </div>
             </div>
             <div className='HomePage-Buttons flex-container row' style={{'display':'flex'}}>
             <div className='Prompt-Button'
@@ -267,7 +269,7 @@ function Header({state, setState}){
     const headerText = () => {
         switch(state.page){
         case 'home': return (locales.heroText[state.locale]);
-        case 'content': return(locales[state.vote][state.locale]);
+        case 'content': return(locales[state.vote][state.locale].toUpperCase());
         case 'video': return("vote logged!")
         default: return("video text");
         }
@@ -276,15 +278,12 @@ function Header({state, setState}){
             <header>
             <div
             onClick={(event)=>setState({...state, 'page': 'home', 'vote': null})}
-            style={{backgroundImage: `url(${HomeImage})`,
-                    backgroundSize: 'contain',
-                    backgroundPosition: 'center',
-                    width: '2rem',
-                    height: '2rem',
-                    backgroundRepeat: 'no-repeat',
+            style={{...styler(HomeImage),
+                   width: '2rem',
+                   height: '2rem',
                    }}
             ></div>
-            <div>
+            <div className="Header-HeroText">
             {headerText(state.page)}
             </div>
             <div

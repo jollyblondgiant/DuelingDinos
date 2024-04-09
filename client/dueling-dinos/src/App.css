@@ -95,6 +95,13 @@ header div {
     color: var(--tertiary);
 }
 
+.Header-HeroText{
+    color: var(--primary);
+    font-family: "HalyardDis";
+    font-size: xx-large;
+}
+
+
 .Prompt-Button {
     padding: 1%;
     margin: auto 0rem;
@@ -121,8 +128,10 @@ header div {
     flex-direction: column;
 }
 
-.HomePage-Prompt div{
+.HomePage-Prompt p{
     text-align: center;
+    font-family: "HalyardDis";
+    font-size: larger;
 }
 
 .VotePage-Buttons{
@@ -147,6 +156,9 @@ header div {
 .Content-SubHead {
     align-items: center;
     justify-content: center;
+    color: white;
+    font-family: "HalyardDis";
+    font-size: larger;
 }
 
 .Content-text{
@@ -155,4 +167,5 @@ header div {
     border: 1px solid var(--secondary);
     color: white;
     background-color: var(--tertiary);
+    font-family: "HalyardDis";
 }
