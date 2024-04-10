@@ -31,8 +31,7 @@ const defaultState = atom(
     {"page": "home",
      "locale": "en",
      "vote": null,
-     "seeHeader": true,
-     "seeHome": false}
+     "seeHeader": true}
 )
 
 const locales = {
@@ -84,16 +83,53 @@ const locales = {
                      "es": "this is dinner subtext but in spanish"},
     "disasterSubText":{"en": "They were both killed in a flood event.",
                        "es": "this is disaster subtext but in spanish"},
+    "startOverHero": {"en": "The real answer is:",
+                      "es" : "the real answer is:"},
+    "startOverSubHead": {"en": "We don't know what happened yet.",
+                         "es": ""},
+    "startOverText0":{"en": "Our paleontologists are uncovering new evidence every day.",
+                     "es": ""},
+    "startOverText1":{"en": " They may revise or discard a hypothesis when it no longer fits the fossil evidence.",
+                     "es": ""},
+    "startOverText2":{"en": "Stay tuned for updates!",
+                     "es": ""},
+
+
+
 }
 
 function styler (icon) {
     return ({backgroundImage: `url(${icon})`,
              backgroundSize: 'contain',
              backgroundPosition: 'center',
-             width: '20%',
-             height: '10rem',
              backgroundRepeat: 'no-repeat',
             })
+}
+
+function StartOverPage ({state, setState}){
+    const timeout = setTimeout(()=>{
+        setState({...state, 'page': 'home',
+                  'vote':null,
+                  'seeHeader':true})
+    }, 90000)
+    return(<>
+           <div className='StartOver-Page display-flex'>
+           <div className='StartOver-SubText'>{locales.startOverSubHead[state.locale]}</div>
+           <div className='StartOver-Text'> {locales.startOverText0[state.locale]} </div>
+           <div className='StartOver-Text'> {locales.startOverText1[state.locale]} </div>
+           <div className='StartOver-Text'
+           style={{marginTop: '5vh'}}> {locales.startOverText2[state.locale]} </div>
+           <div
+           onClick={(event)=>setState({...state, 'page': 'home',
+                                       'vote':null,
+
+                                       'seeHeader':true})}
+           style={{...styler(locales.startOverImage[state.locale]),
+                   'height': '10vh',
+                   'margin-top': '21vh'}}
+           ></div>
+           </div>
+           </>)
 }
 
 const VideoPlayer = (props) => {
@@ -146,30 +182,14 @@ function VideoPage({state, setState}){
         }]
     };
     const handlePlayerReady = (player) => {
-        player.on('waiting', ()=> {
-            setState({...state, 'seeHome': false})})
-
         player.on('ended', ()=>{
-            setState({...state, 'seeHome': true})
-            const timeout = setTimeout(()=>{
-                setState({...state, 'page': 'home',
-                          'vote':null,
-                          'seeHeader':true})
-            }, 90000)})
+            setState({...state, page: 'startOver',
+                      seeHeader: true})
+        })
     }
     return (<>
             <VideoPlayer
             options={videoJsOptions} onReady={handlePlayerReady} />
-            {state.seeHome &&
-            <div className='HomePage-Buttons flex-container row' style={{'display':'flex'}}>
-            <div className='Prompt-Button'
-             onClick={(event)=>setState({...state, 'page': 'home',
-                                         'vote':null,
-                                         'seeHeader':true})}
-            style={styler(locales.startOverImage[state.locale])}
-            ></div>
-            </div>
-            }
             </>);
 }
 
@@ -184,9 +204,9 @@ function ContentPage({state, setState}){
     }
     const content = () => {
         switch (state.vote){
-        case "duel":  return ({...styler(locales.duelImage[state.locale]), margin: '1rem', width: '30%'});
-        case "dinner": return ({...styler(locales.dinnerImage[state.locale]), margin: '1rem', width: '30%'});
-        case "disaster": return({...styler(locales.disasterImage[state.locale]), margin: '1rem', width: '30%'})
+        case "duel":  return ({...styler(locales.duelImage[state.locale]), marginBottom: '1vh', height: '60vh'});
+        case "dinner": return ({...styler(locales.dinnerImage[state.locale]), marginBottom: '1vh', height: '60vh'});
+        case "disaster": return({...styler(locales.disasterImage[state.locale]), marginBottom: '1vh', height: '60vh'});
         }
     }
     const subtext = () => {
@@ -232,7 +252,6 @@ function HomePage({state, setState}){
             <div className='HomePage-Prompt'>
             <div>
             <p>{locales.homePrompt0[state.locale]}</p>
-            <br/>
             <p>{locales.homePrompt1[state.locale]}</p>
             </div>
             </div>
@@ -262,6 +281,8 @@ function Main ({state, setState}){
         return (<VideoPage state={state} setState={setState}/>);
     case "content":
         return (<ContentPage state={state} setState={setState}/>);
+    case "startOver":
+        return(<StartOverPage state={state} setState={setState}/>);
     };
 }
 
@@ -270,6 +291,7 @@ function Header({state, setState}){
         switch(state.page){
         case 'home': return (locales.heroText[state.locale]);
         case 'content': return(locales[state.vote][state.locale].toUpperCase());
+        case 'startOver': return(locales.startOverHero[state.locale].toUpperCase())
         case 'video': return("vote logged!")
         default: return("video text");
         }
@@ -280,7 +302,10 @@ function Header({state, setState}){
             onClick={(event)=>setState({...state, 'page': 'home', 'vote': null})}
             style={{...styler(HomeImage),
                    width: '2rem',
-                   height: '2rem',
+                    height: '2rem',
+                    position: 'absolute',
+                    top: '3vh',
+                    left: '2vw',
                    }}
             ></div>
             <div className="Header-HeroText">
@@ -289,7 +314,10 @@ function Header({state, setState}){
             <div
             style={{...styler(locales.localeImage[state.locale]),
                     width: '4rem',
-                    height: '2rem'}}
+                    height: '2rem',
+                    position: 'absolute',
+                    top: '3vh',
+                    right: '2vw',}}
             onClick={() => {
                 switch(state.locale){
                 case "en": return(
