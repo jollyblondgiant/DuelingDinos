@@ -4,6 +4,8 @@ import {useEffect, useRef } from 'react';
 
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
+import Chart from 'chart.js/auto';
+import {Bar, Line} from 'react-chartjs-2';
 
 import DuelVideo from './video/duel.mp4';
 import DinnerVideo from './video/dinner.mp4';
@@ -71,8 +73,10 @@ const locales = {
               "es": "Video"},
     "duelText":{"en": "The injuries to both dinosaurs may be evidence that they died in battle. But we need to establish exactly when and how the injuries occurred to be sure.",
                 "es": "ESP<The injuries to both dinosaurs may be evidence that they died in battle. But we need to establish exactly when and how the injuries occurred to be sure.>"},
-    "dinnerText":{"en": "The dinosaurs may not have died at the same time. The tyrannosaur could have been scavenging on a Triceratops that was already dead.",
-                  "es": "ESP<This is placeholder Dinner Text.>"},
+    "dinnerText0":{"en": "The dinosaurs may not have died at the same time. The tyrannosaur could have been scavenging on a ",
+                   "es": "ESP<This is placeholder Dinner Text.>"},
+    "dinnerText1":{"en": " that was already dead.",
+                   "es": "ESP<This is placeholder Dinner Text.>"},
     "disasterText":{"en": "Natural disasters can tamper with evidence by sweeping it all into once place. These dinosaurs were not necessarily interacting at all.",
                     "es": "ESP<This is placeholder Disaster Text.>"},
     "voteConfirm":{"en": "If this is how you interpret the evidence, click VOTE below.",
@@ -88,11 +92,11 @@ const locales = {
     "startOverSubHead": {"en": "We don't know what happened yet.",
                          "es": ""},
     "startOverText0":{"en": "Our paleontologists are uncovering new evidence every day.",
-                     "es": ""},
+                      "es": ""},
     "startOverText1":{"en": " They may revise or discard a hypothesis when it no longer fits the fossil evidence.",
-                     "es": ""},
+                      "es": ""},
     "startOverText2":{"en": "Stay tuned for updates!",
-                     "es": ""},
+                      "es": ""},
 
 
 
@@ -107,27 +111,67 @@ function styler (icon) {
 }
 
 function StartOverPage ({state, setState}){
-    const timeout = setTimeout(()=>{
-        setState({...state, 'page': 'home',
-                  'vote':null,
-                  'seeHeader':true})
-    }, 90000)
+      const timeout = setTimeout(()=>{
+      setState({...state, 'page': 'home',
+      'vote':null,
+      'seeHeader':true})
+      }, 90000)
+    async function getVotes(){
+        const request  = await fetch(req_url + "/votes",
+                                     {method: "GET",
+                                      mode: "cors",
+                                      headers: {'Content-Type': 'application/json'}});
+        const response = await request.json();
+        setState({...state, votes: response})
+    }
+    useEffect(()=>{
+        getVotes();
+    }, [])
+    const chartData = () => {
+        console.log('charting data', state.votes.duel)
+        return ({
+            labels: ['votes'],
+            datasets: [{
+                label: 'duel',
+                data: [state.votes.duel[0]],
+                backgroundColor: '#f5ac28'
+            },
+                       {label: 'dinner',
+                        data: [state.votes.dinner[0]],
+                        backgroundColor: '#d8203e'
+                       },
+                       {label: 'disaster',
+                        data: [state.votes.disaster[0]],
+                        backgroundColor: '#00a5c3'
+                       }]
+
+        })
+    }
     return(<>
            <div className='StartOver-Page display-flex'>
            <div className='StartOver-SubText'>{locales.startOverSubHead[state.locale]}</div>
-           <div className='StartOver-Text'> {locales.startOverText0[state.locale]} </div>
-           <div className='StartOver-Text'> {locales.startOverText1[state.locale]} </div>
-           <div className='StartOver-Text'
-           style={{marginTop: '5vh'}}> {locales.startOverText2[state.locale]} </div>
+           <div className="StartOver-Prompt flex-container" style={{'display':'flex'}}>
+           <div className='Votes-Chart'>
+           {state.votes && <Bar data={chartData()}/>}
+           </div>
+           <div className='StartOver-Text'>
+           <p>{locales.startOverText0[state.locale]} </p>
+           <p>{locales.startOverText1[state.locale]}</p>
+           <p>{locales.startOverText2[state.locale]} </p>
+           </div>
+           </div>
+           <div className='StartOver-Buttons flex-container'>
            <div
-           onClick={(event)=>setState({...state, 'page': 'home',
-                                       'vote':null,
-
-                                       'seeHeader':true})}
-           style={{...styler(locales.startOverImage[state.locale]),
-                   'height': '10vh',
-                   'margin-top': '21vh'}}
+           className='StartOver-Button'
+           onClick={(event)=>{
+               clearTimeout(timeout)
+               setState(
+               {...state, 'page': 'home',
+                'vote':null,
+                'seeHeader':true})}}
+           style={styler(locales.startOverImage[state.locale])}
            ></div>
+           </div>
            </div>
            </>)
 }
@@ -157,7 +201,7 @@ const VideoPlayer = (props) => {
     }, [playerRef])
     return (
             <div data-vjs-player>
-              <div ref={videoRef}/>
+            <div ref={videoRef}/>
             </div>
     )
 };
@@ -194,6 +238,11 @@ function VideoPage({state, setState}){
 }
 
 function ContentPage({state, setState}){
+    const timeout = setTimeout(()=>{
+        setState({...state, 'page': 'home',
+                  'vote':null,
+                  'seeHeader':true})
+    }, 90000)
     async function logVote(vote){
         const request  = await fetch(req_url + "/vote",
                                      {method: "POST",
@@ -216,6 +265,22 @@ function ContentPage({state, setState}){
         case "disaster": return(locales.disasterSubText);
         }
     }
+    const contentText = () => {
+        switch (state.vote){
+        case "duel":  return (<div>{locales.duelText[state.locale]}</div>);
+        case "dinner": return (<div>{locales.dinnerText0[state.locale]} <i>Triceratops</i>
+                               {locales.dinnerText1[state.locale]}
+                               </div>);
+        case "disaster": return(<div>{locales.disasterText[state.locale]}</div>);
+        }
+    }
+    const contentStyler = () => {
+        switch (state.vote){
+        case "duel":  return ({borderColor: '#f5ac28'});
+        case "dinner": return ({borderColor: '#d8203e'});
+        case "disaster": return({borderColor:  '#00a5c3'});
+        }
+    }
     return (<>
             <div className="Content-SubHead" style={{'display': 'flex'}}>
             <p>{subtext()[state.locale]}</p>
@@ -224,20 +289,25 @@ function ContentPage({state, setState}){
             <div className='Prompt-Button'
             style={content()}
             ></div>
-            <div className="Content-text">
-            <p>{locales[state.vote + "Text"][state.locale]}</p>
+            <div className="Content-text"
+            style={contentStyler()}>
+            {contentText()}
             <br/>
-            <p>{locales.voteConfirm[state.locale]}</p>
+            <div>{locales.voteConfirm[state.locale]}</div>
             </div>
             </div>
             <div className="VotePage-Buttons flex-container" style={{'display':'flex'}}>
             <div className="VotePage-Button"
             style={styler(locales.backImage[state.locale])}
-            onClick={(event)=>setState({...state, 'page': 'home', 'vote':null})}
+            onClick={()=>{
+                clearTimeout(timeout)
+                setState({...state, 'page': 'home', 'vote':null})}}
             ></div>
             <div className="VotePage-Button"
-            onClick={()=> {logVote(state.vote);
-                           setState({...state, 'page':'video', 'seeHeader': false});
+            onClick={()=> {
+                clearTimeout(timeout);
+                logVote(state.vote);
+                setState({...state, 'page':'video', 'seeHeader': false});
                           }
                     }
             style={styler(locales.voteImage[state.locale])}
@@ -301,7 +371,7 @@ function Header({state, setState}){
             <div
             onClick={(event)=>setState({...state, 'page': 'home', 'vote': null})}
             style={{...styler(HomeImage),
-                   width: '2rem',
+                    width: '2rem',
                     height: '2rem',
                     position: 'absolute',
                     top: '3vh',

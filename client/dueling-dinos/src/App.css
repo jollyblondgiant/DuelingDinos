@@ -2,6 +2,7 @@
     --primary: #5abb62;
     --secondary: #ea8520;
     --tertiary: #021c18;
+
 }
 
 @font-face{
@@ -98,7 +99,7 @@ header div {
 .Header-HeroText{
     color: var(--primary);
     font-family: "HalyardDis";
-    font-size: xxx-large;
+    font-size: 9vh;
     margin-bottom: 2vh;
 }
 
@@ -135,23 +136,23 @@ header div {
 .HomePage-Prompt p{
     text-align: center;
     font-family: "HalyardDis";
-    font-size: xx-large;
+    font-size: 5vh;
     margin-bottom: -2vh;
 }
 
 .VotePage-Buttons{
     background-color: transparent;
-    width: 20vw;
+    width: 32vw;
     position: absolute;
     bottom: 3vh;
     margin: 1vh;
-    right: 5vh;
+    right: 0;
     height: 7vh;
 }
 
 .VotePage-Button{
-    width: 10vw;
-    height: 5vh;
+    width: 20vw;
+    height: 10vh;
 }
 
 .Content{
@@ -164,20 +165,35 @@ header div {
     justify-content: center;
     color: white;
     font-family: "HalyardDis";
-    font-size: xx-large;
+    font-size: 5vh;
     margin-bottom: 3vh;
+}
+
+.Content-SubHead p {
+    margin: -4vh 0 4vh 0;
 }
 
 .Content-text{
     width: 60%;
     height: 30vh;
-    margin: 6vh auto auto 1vw;
+    margin: 5.5vh auto auto 0vw;
     border: 1px solid var(--secondary);
     color: white;
     background-color: var(--tertiary);
     font-family: "HalyardDis";
     font-size: x-large;
-    padding: 1vw;
+    padding: 2vh 2vw;
+    border-radius: 10px;
+    border-width: 5px;
+}
+
+.Content-text div{
+    width: 80%;
+}
+
+.Content-text div i{
+    font-family: "HalyardDis";
+    font-weight: bold;
 }
 
 .StartOver-Page{
@@ -191,13 +207,17 @@ header div {
 
 
 .StartOver-Text{
+    width: 60%;
+    height: 30vh;
+    margin: 5.5vh auto auto 0vw;
+    border: 1px solid var(--secondary);
+    color: white;
+    background-color: var(--tertiary);
     font-family: "HalyardDis";
-    margin: 0vh auto;
     font-size: x-large;
-    width: 80%;
-    display: flex;
-    align-content: center;
-    justify-content: center;
+    padding: 2vh 2vw;
+    border-radius: 10px;
+    border-width: 5px;
 }
 
 .StartOver-SubText{
@@ -210,3 +230,26 @@ header div {
     justify-content: center;
 }
 
+.StartOver-Buttons{
+    display: flex;
+    position: absolute;
+    bottom: 3vh;
+    margin: 1vh;
+    right: 0;
+    height: 7vh;
+}
+
+.StartOver-Button {
+    width: 20vw;
+    height: 10vh;
+}
+
+.Votes-Chart{
+    margin: 10vh 0 auto 0;
+    width: 30%
+}
+
+.Votes-Chart canvas{
+    width: 100%;
+    height: auto;
+}
