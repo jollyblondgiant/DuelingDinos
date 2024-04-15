@@ -22,5 +22,5 @@
 /client/dueling-dinosaurs/yarn-debug.log*
 /client/dueling-dinosaurs/yarn-error.log*
 
-/server/.env
-/client/dueling-dinosaurs/.env
+/.env
+/*.csv

@@ -3,15 +3,11 @@ Requirements:
 
 1) Clone the repository.
 2) cd DuelingDinos
-3) cp server/template.env server/.env
+3) cp template.env .env
 4) cp client/dueling-dinos/template.env client/dueling-dinos/.env
-5) update the two new .env files with appropriate server URL and PORT values
-6) update the server/.env file with the desired output filename.
-7) cd server
-8) node index.js
-9) in a new tab, navigate to client/dueling-dinos
-10) npm run
-11) navigate to your server url, port 3000.
+5) update the two new .env files with appropriate SERVER_URL, PORT, and FILENAME values.
+6) npm run
+7) navigate to your server url, port 3000.
 
 before deployment to production, be sure to uncomment the line in client/dueling-dinosaurs/src/App.css that sets the 'cursor' to 'none'
 

@@ -7,13 +7,8 @@ const fs = require('fs');
 const json2csv = require('json2csv').parse;
 const { parse } = require('csv-parse/sync');
 const newline = '\r\n';
-
-const voteFields = ['DateTime', 'Vote'];
-const outputFile = process.env.OUTPUT_FILENAME || 'dinovotes';
 const fields = ['DateTime', 'Vote'];
-
-
-let filename = outputFile + '.csv';
+const filename = process.env.OUTPUT_FILENAME + '.csv';
 
 !fs.existsSync(filename) && fs.writeFile(filename, fields + newline, (_)=> {} );
 
@@ -26,17 +21,11 @@ app.get('/votes', (req, response) => {
         })
         const result = votes.reduce((acc, vote) => {
             switch(vote.Vote){
-            case 'duel': return (
-                {...acc, 'duel': [acc.duel[0] + 1,
-                                  (( acc.duel[0] + 1 )/votes.length).toPrecision(3)]})
-            case 'dinner': return (
-                {...acc, 'dinner': [acc.dinner[0] + 1,
-                                    ((acc.dinner[0] + 1) / votes.length).toPrecision(3)]})
-            case 'disaster': return (
-                {...acc, 'disaster': [acc.disaster[0] + 1,
-                                      ((acc.disaster[0] + 1) / votes.length).toPrecision(3)]})
+            case 'duel': return ({...acc, 'duel': acc.duel + 1})
+            case 'dinner': return ({...acc, 'dinner': acc.dinner + 1})
+            case 'disaster': return ({...acc, 'disaster': acc.disaster + 1})
             }
-        }, {'duel': [0, 0], 'dinner': [0, 0], 'disaster': [0, 0]})
+        }, {'duel': 0, 'dinner': 0, 'disaster': 0})
         response.send(result);
     })
 });

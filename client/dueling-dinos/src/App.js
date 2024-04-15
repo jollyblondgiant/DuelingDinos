@@ -30,11 +30,10 @@ import EspanolImage from './images/ESPANOL.png';
 const req_url =  process.env.REACT_APP_SERVER_URL + ":" + process.env.REACT_APP_SERVER_PORT;
 
 const defaultState = atom(
-    {//"page": "home",
-        "page": "startOver",
-        "locale": "en",
-        "vote": null,
-        "seeHeader": true}
+    {"page": "home",
+     "locale": "en",
+     "vote": null,
+     "seeHeader": true}
 )
 
 const locales = {
@@ -97,10 +96,7 @@ const locales = {
     "startOverText1":{"en": " They may revise or discard a hypothesis when it no longer fits the fossil evidence.",
                       "es": ""},
     "startOverText2":{"en": "Stay tuned for updates!",
-                      "es": ""},
-
-
-
+                      "es": ""}
 }
 
 function styler (icon) {
@@ -112,13 +108,12 @@ function styler (icon) {
 }
 
 function StartOverPage ({state, setState}){
-    /*
-      const timeout = setTimeout(()=>{
-      setState({...state, 'page': 'home',
-      'vote':null,
-      'seeHeader':true})
-      }, 90000)
-    */
+    const timeout = setTimeout(()=>{
+        setState({...state, 'page': 'home',
+                  'vote':null,
+                  'seeHeader':true})
+    }, 90000)
+
     async function getVotes(){
         const request  = await fetch(req_url + "/votes",
                                      {method: "GET",
@@ -135,6 +130,12 @@ function StartOverPage ({state, setState}){
     const chartData = ({duel, dinner, disaster}) => {
         return ({
             labels:['duel', 'dinner', 'disaster'],
+            options: {
+                plugins: {
+                legend: {
+                    position: 'bottom'
+                }}
+            },
             datasets: [{
                 label: 'Votes',
                 data:[duel, dinner, disaster],
@@ -148,7 +149,9 @@ function StartOverPage ({state, setState}){
            <div className='StartOver-SubText'>{locales.startOverSubHead[state.locale]}</div>
            <div className="StartOver-Prompt flex-container" style={{'display':'flex'}}>
            <div className='Votes-Chart'>
-           {state.votes && <Pie data={chartData(state.votes)}/>}
+           {state.votes && <Pie
+            options={{plugins: {legend: {position: 'bottom'}}}}
+            data={chartData(state.votes)}/>}
            </div>
            <div className='StartOver-Text'>
            <p>{locales.startOverText0[state.locale]} </p>
@@ -161,7 +164,7 @@ function StartOverPage ({state, setState}){
            <div
            className='StartOver-Button'
            onClick={(event)=>{
-               //clearTimeout(timeout)
+               clearTimeout(timeout)
                setState(
                    {...state, 'page': 'home',
                     'vote':null,
@@ -252,6 +255,7 @@ function ContentPage({state, setState}){
     }, 90000)
 
     async function logVote(vote){
+        console.log('attempting to log vote', req_url);
         const request  = await fetch(req_url + "/vote",
                                      {method: "POST",
                                       mode: "cors",
