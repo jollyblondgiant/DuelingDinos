@@ -210,7 +210,7 @@ header div {
     width: 60%;
     height: 30vh;
     margin: 5.5vh auto auto 0vw;
-    border: 1px solid var(--secondary);
+    border: 1px solid var(--primary);
     color: white;
     background-color: var(--tertiary);
     font-family: "HalyardDis";
@@ -223,7 +223,7 @@ header div {
 .StartOver-SubText{
     font-family: "HalyardDis";
     margin: -2vh auto 9vh auto;
-    font-size: xx-large;
+    font-size: 5vh;
     width: 80%;
     display: flex;
     align-content: center;
@@ -245,7 +245,6 @@ header div {
 }
 
 .Votes-Chart{
-    margin: 10vh 0 auto 0;
     width: 30%
 }
 

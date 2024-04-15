@@ -1,0 +1,6 @@
+{"name":"Dueling Dinos",
+"version":"0.1",
+"scripts":{
+  "start": "concurrently \"node server/index.js\" \"cd client/dueling-dinos && npm start\""
+},
+"dependencies":{"concurrently":"^8.2.2"}}

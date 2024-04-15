@@ -5,7 +5,7 @@ import {useEffect, useRef } from 'react';
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
 import Chart from 'chart.js/auto';
-import {Bar, Line} from 'react-chartjs-2';
+import {Pie, Doughnut} from 'react-chartjs-2';
 
 import DuelVideo from './video/duel.mp4';
 import DinnerVideo from './video/dinner.mp4';
@@ -30,10 +30,11 @@ import EspanolImage from './images/ESPANOL.png';
 const req_url =  process.env.REACT_APP_SERVER_URL + ":" + process.env.REACT_APP_SERVER_PORT;
 
 const defaultState = atom(
-    {"page": "home",
-     "locale": "en",
-     "vote": null,
-     "seeHeader": true}
+    {//"page": "home",
+        "page": "startOver",
+        "locale": "en",
+        "vote": null,
+        "seeHeader": true}
 )
 
 const locales = {
@@ -111,11 +112,13 @@ function styler (icon) {
 }
 
 function StartOverPage ({state, setState}){
+    /*
       const timeout = setTimeout(()=>{
       setState({...state, 'page': 'home',
       'vote':null,
       'seeHeader':true})
       }, 90000)
+    */
     async function getVotes(){
         const request  = await fetch(req_url + "/votes",
                                      {method: "GET",
@@ -124,39 +127,33 @@ function StartOverPage ({state, setState}){
         const response = await request.json();
         setState({...state, votes: response})
     }
+
     useEffect(()=>{
         getVotes();
     }, [])
-    const chartData = () => {
-        console.log('charting data', state.votes.duel)
-        return ({
-            labels: ['votes'],
-            datasets: [{
-                label: 'duel',
-                data: [state.votes.duel[0]],
-                backgroundColor: '#f5ac28'
-            },
-                       {label: 'dinner',
-                        data: [state.votes.dinner[0]],
-                        backgroundColor: '#d8203e'
-                       },
-                       {label: 'disaster',
-                        data: [state.votes.disaster[0]],
-                        backgroundColor: '#00a5c3'
-                       }]
 
+    const chartData = ({duel, dinner, disaster}) => {
+        return ({
+            labels:['duel', 'dinner', 'disaster'],
+            datasets: [{
+                label: 'Votes',
+                data:[duel, dinner, disaster],
+                backgroundColor: ['#f5ac28', '#d8203e', '#00a5c3']
+            }],
         })
     }
+
     return(<>
            <div className='StartOver-Page display-flex'>
            <div className='StartOver-SubText'>{locales.startOverSubHead[state.locale]}</div>
            <div className="StartOver-Prompt flex-container" style={{'display':'flex'}}>
            <div className='Votes-Chart'>
-           {state.votes && <Bar data={chartData()}/>}
+           {state.votes && <Pie data={chartData(state.votes)}/>}
            </div>
            <div className='StartOver-Text'>
            <p>{locales.startOverText0[state.locale]} </p>
            <p>{locales.startOverText1[state.locale]}</p>
+           <br/>
            <p>{locales.startOverText2[state.locale]} </p>
            </div>
            </div>
@@ -164,11 +161,11 @@ function StartOverPage ({state, setState}){
            <div
            className='StartOver-Button'
            onClick={(event)=>{
-               clearTimeout(timeout)
+               //clearTimeout(timeout)
                setState(
-               {...state, 'page': 'home',
-                'vote':null,
-                'seeHeader':true})}}
+                   {...state, 'page': 'home',
+                    'vote':null,
+                    'seeHeader':true})}}
            style={styler(locales.startOverImage[state.locale])}
            ></div>
            </div>
@@ -176,10 +173,12 @@ function StartOverPage ({state, setState}){
            </>)
 }
 
+
 const VideoPlayer = (props) => {
     const videoRef = useRef(null);
     const playerRef = useRef(null);
     const {options, onReady} = props;
+
     useEffect(()=>{
         if(!playerRef.current){
             const videoElement = document.createElement("video-js")
@@ -191,6 +190,7 @@ const VideoPlayer = (props) => {
             });
         }
     }, [options, videoRef])
+
     useEffect(()=>{
         const player = playerRef.current;
         return () => {
@@ -199,6 +199,7 @@ const VideoPlayer = (props) => {
                 playerRef.current = null;
             }};
     }, [playerRef])
+
     return (
             <div data-vjs-player>
             <div ref={videoRef}/>
@@ -206,14 +207,17 @@ const VideoPlayer = (props) => {
     )
 };
 
+
 function VideoPage({state, setState}){
     const playerRef = useRef(null);
+
     const video = () => {
         switch(state.vote){
         case "duel": return DuelVideo;
         case "dinner": return DinnerVideo
         case "disaster": return DisasterVideo}
     }
+
     const videoJsOptions = {
         autoplay: true,
         controls: false,
@@ -225,17 +229,20 @@ function VideoPage({state, setState}){
             type: 'video/mp4'
         }]
     };
+
     const handlePlayerReady = (player) => {
         player.on('ended', ()=>{
             setState({...state, page: 'startOver',
                       seeHeader: true})
         })
     }
+
     return (<>
             <VideoPlayer
             options={videoJsOptions} onReady={handlePlayerReady} />
             </>);
 }
+
 
 function ContentPage({state, setState}){
     const timeout = setTimeout(()=>{
@@ -243,6 +250,7 @@ function ContentPage({state, setState}){
                   'vote':null,
                   'seeHeader':true})
     }, 90000)
+
     async function logVote(vote){
         const request  = await fetch(req_url + "/vote",
                                      {method: "POST",
@@ -251,13 +259,18 @@ function ContentPage({state, setState}){
                                       body: JSON.stringify({"vote": vote})});
 
     }
+
     const content = () => {
         switch (state.vote){
-        case "duel":  return ({...styler(locales.duelImage[state.locale]), marginBottom: '1vh', height: '60vh'});
-        case "dinner": return ({...styler(locales.dinnerImage[state.locale]), marginBottom: '1vh', height: '60vh'});
-        case "disaster": return({...styler(locales.disasterImage[state.locale]), marginBottom: '1vh', height: '60vh'});
+        case "duel":  return ({...styler(locales.duelImage[state.locale]),
+                               marginBottom: '1vh', height: '60vh'});
+        case "dinner": return ({...styler(locales.dinnerImage[state.locale]),
+                                marginBottom: '1vh', height: '60vh'});
+        case "disaster": return({...styler(locales.disasterImage[state.locale]),
+                                 marginBottom: '1vh', height: '60vh'});
         }
     }
+
     const subtext = () => {
         switch (state.vote){
         case "duel":  return (locales.duelSubText);
@@ -265,6 +278,7 @@ function ContentPage({state, setState}){
         case "disaster": return(locales.disasterSubText);
         }
     }
+
     const contentText = () => {
         switch (state.vote){
         case "duel":  return (<div>{locales.duelText[state.locale]}</div>);
@@ -274,6 +288,7 @@ function ContentPage({state, setState}){
         case "disaster": return(<div>{locales.disasterText[state.locale]}</div>);
         }
     }
+
     const contentStyler = () => {
         switch (state.vote){
         case "duel":  return ({borderColor: '#f5ac28'});
@@ -281,6 +296,7 @@ function ContentPage({state, setState}){
         case "disaster": return({borderColor:  '#00a5c3'});
         }
     }
+
     return (<>
             <div className="Content-SubHead" style={{'display': 'flex'}}>
             <p>{subtext()[state.locale]}</p>
@@ -308,7 +324,7 @@ function ContentPage({state, setState}){
                 clearTimeout(timeout);
                 logVote(state.vote);
                 setState({...state, 'page':'video', 'seeHeader': false});
-                          }
+            }
                     }
             style={styler(locales.voteImage[state.locale])}
             >
@@ -316,6 +332,7 @@ function ContentPage({state, setState}){
             </div>
             </>);
 }
+
 
 function HomePage({state, setState}){
     return (<>
@@ -339,9 +356,9 @@ function HomePage({state, setState}){
             onClick={(event)=>setState({...state, 'page':'content','vote': 'disaster'})}
             ></div>
             </div>
-
             </>);
 }
+
 
 function Main ({state, setState}){
     switch (state.page) {
@@ -356,6 +373,7 @@ function Main ({state, setState}){
     };
 }
 
+
 function Header({state, setState}){
     const headerText = () => {
         switch(state.page){
@@ -366,6 +384,7 @@ function Header({state, setState}){
         default: return("video text");
         }
     }
+
     return (<>
             <header>
             <div
@@ -404,8 +423,10 @@ function Header({state, setState}){
            )
 }
 
+
 function App() {
     const [state, setState] = useAtom(defaultState);
+
     return (
             <>
             {state.seeHeader && <Header state={state} setState={setState}/>}
@@ -413,5 +434,6 @@ function App() {
             </>
     );
 }
+
 
 export default App;
