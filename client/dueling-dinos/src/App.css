@@ -126,7 +126,7 @@ header div {
 
 .HomePage-Prompt{
     color: white;
-    margin: auto;
+    margin: -6vh auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -206,7 +206,7 @@ header div {
 
 
 .StartOver-Text{
-    width: 60%;
+    width: 40%;
     height: 30vh;
     margin: 7vh auto auto 0vw;
     border: 1px solid var(--primary);
@@ -214,10 +214,17 @@ header div {
     background-color: var(--tertiary);
     font-family: "HalyardDisSemBd";
     font-size: 3vh;
-    padding: 2vh 2vw;
+    padding: 2vw;
     border-radius: 10px;
     border-width: 5px;
 }
+
+.StartOver-Text p:first-child{
+    margin-top: 0;}
+
+
+.StartOver-Text p:last-child{
+    margin-top: 5vh;}
 
 .StartOver-SubText{
     font-family: "HalyardDis";
@@ -244,7 +251,10 @@ header div {
 }
 
 .Votes-Chart{
-    width: 30%
+    width: 50%;
+    margin: auto;
+    height: 101%;
+
 }
 
 .Votes-Chart canvas{

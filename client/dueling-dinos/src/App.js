@@ -4,8 +4,10 @@ import {useEffect, useRef } from 'react';
 
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
+
 import Chart from 'chart.js/auto';
-import {Pie, Doughnut} from 'react-chartjs-2';
+import {Bar} from 'react-chartjs-2';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import DuelVideo from './video/duel.mp4';
 import DinnerVideo from './video/dinner.mp4';
@@ -28,6 +30,8 @@ import EnglishImage from './images/ENGLISH.png';
 import EspanolImage from './images/ESPANOL.png';
 
 const req_url =  process.env.REACT_APP_SERVER_URL + ":" + process.env.REACT_APP_SERVER_PORT;
+
+Chart.register(ChartDataLabels);
 
 const defaultState = atom(
     {"page": "home",
@@ -69,6 +73,8 @@ const locales = {
              "es":"Atrás"},
     "vote":{"en":"Vote",
             "es": "Votar"},
+    "votes": {"en": "Votes",
+              "es": "Votos"},
     "video": {"en": "Video",
               "es": "Video"},
     "duelText":{"en": "The injuries to both dinosaurs may be evidence that they died in battle. But we need to establish exactly when and how the injuries occurred to be sure.",
@@ -129,7 +135,7 @@ function StartOverPage ({state, setState}){
 
     const chartData = ({duel, dinner, disaster}) => {
         return ({
-            labels:['duel', 'dinner', 'disaster'],
+            labels:[locales.duel[state.locale], locales.dinner[state.locale], locales.disaster[state.locale]],
             options: {
                 plugins: {
                 legend: {
@@ -137,10 +143,67 @@ function StartOverPage ({state, setState}){
                 }}
             },
             datasets: [{
-                label: 'Votes',
+                label: locales.votes[state.locale].toUpperCase(),
                 data:[duel, dinner, disaster],
-                backgroundColor: ['#f5ac28', '#d8203e', '#00a5c3']
+                backgroundColor: ['#f5ac28', '#d8203e', '#00a5c3'],
+                datalabels: {
+                    font: {
+                        family: 'HalyardDis',
+                        size: 25
+                    },
+                    color: (context) => {
+                        return (context.dataset.backgroundColor[context.dataIndex])
+                    },
+                    align: 'end',
+                    anchor: 'end'
+                }
             }],
+        })
+    }
+
+    const chartOptions = () => {
+        const generateLabels = ({data}) => {
+            const ds = data.datasets[0]
+            return data.labels.map((label, i)=>{
+                return {
+                    text: label.toUpperCase(),
+                    fontColor: ds.backgroundColor[i],
+                }
+            })
+        }
+        return ({
+            scales: {
+                x: {display: true,
+                    ticks: {
+                        callback: (v, i, x)=>{
+                            return [locales.duel[state.locale],
+                                    locales.dinner[state.locale],
+                                    locales.disaster[state.locale]]
+                            [i].toUpperCase()},
+                        font: {
+                            size: 20,
+                            family: 'HalyardDis'
+                        },
+                        color: (context) => {
+                            return ['#f5ac28', '#d8203e', '#00a5c3'][context.index]
+                        },
+                    }},
+                y: {display: false}
+            },
+            plugins: {
+                legend: {
+                    display: false},
+                title: {
+                    display: true,
+                    text: locales.votes[state.locale].toUpperCase(),
+                    color: '#5abb62',
+                    padding: 35,
+                    font: {
+                        family: 'HalyardDis',
+                        size: 30
+                    }
+                },
+            }
         })
     }
 
@@ -149,14 +212,13 @@ function StartOverPage ({state, setState}){
            <div className='StartOver-SubText'>{locales.startOverSubHead[state.locale]}</div>
            <div className="StartOver-Prompt flex-container" style={{'display':'flex'}}>
            <div className='Votes-Chart'>
-           {state.votes && <Pie
-            options={{plugins: {legend: {position: 'bottom'}}}}
+           {state.votes && <Bar
+            options={chartOptions()}
             data={chartData(state.votes)}/>}
            </div>
            <div className='StartOver-Text'>
            <p>{locales.startOverText0[state.locale]} </p>
            <p>{locales.startOverText1[state.locale]}</p>
-           <br/>
            <p>{locales.startOverText2[state.locale]} </p>
            </div>
            </div>
@@ -252,16 +314,14 @@ function ContentPage({state, setState}){
         setState({...state, 'page': 'home',
                   'vote':null,
                   'seeHeader':true})
-    }, 90000)
+    }, 180000)
 
     async function logVote(vote){
-        console.log('attempting to log vote', req_url);
         const request  = await fetch(req_url + "/vote",
                                      {method: "POST",
                                       mode: "cors",
                                       headers: {'Content-Type': 'application/json'},
                                       body: JSON.stringify({"vote": vote})});
-
     }
 
     const content = () => {
