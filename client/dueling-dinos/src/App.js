@@ -57,12 +57,12 @@ const locales = {
                       "es": SpStartOverImage},
     "locale": {"en": "EspanolImage",
                "es": "EnglishImage"},
-    "heroText": {"en": "HOW DID THEY DIE?",
-                 "es": "¿HOW DID THEY DIE BUT IN SPANISH?"},
+    "heroText": {"en": "How did they die?",
+                 "es": "¿Cómo murieron?"},
     "homePrompt0": {"en": "You've seen some evidence.",
-                    "es": "You've seen some evidence, but in Spanish."},
+                    "es": "Has visto algunas pruebas."},
     "homePrompt1": {"en": "How do you interpret it?",
-                    "es": "¿How do you interpret it, but in Spanish?"},
+                    "es": "¿Cómo las interpretas?"},
     "duel": {"en": "Duel",
              "es": "Duelo"},
     "dinner": {"en": "Dinner",
@@ -78,31 +78,31 @@ const locales = {
     "video": {"en": "Video",
               "es": "Video"},
     "duelText":{"en": "The injuries to both dinosaurs may be evidence that they died in battle. But we need to establish exactly when and how the injuries occurred to be sure.",
-                "es": "ESP<The injuries to both dinosaurs may be evidence that they died in battle. But we need to establish exactly when and how the injuries occurred to be sure.>"},
+                "es": "Las heridas de los dinosaurios pueden demostrar que murieron peleando. Pero necesitamos saber exactamente cuándo y cómo ocurrieron las lesiones para estar seguros"},
     "dinnerText0":{"en": "The dinosaurs may not have died at the same time. The tyrannosaur could have been scavenging on a ",
-                   "es": "ESP<This is placeholder Dinner Text.>"},
+                   "es": "Es posible que estos dinosaurios no hayan muerto al mismo tiempo. El tironosaurio podría haber estado carroñando um "},
     "dinnerText1":{"en": " that was already dead.",
-                   "es": "ESP<This is placeholder Dinner Text.>"},
+                   "es": " que ya estaba muerto."},
     "disasterText":{"en": "Natural disasters can tamper with evidence by sweeping it all into once place. These dinosaurs were not necessarily interacting at all.",
-                    "es": "ESP<This is placeholder Disaster Text.>"},
+                    "es": "Los desastres naturales pueden alterar las pruebas amontonándolas todas en un solo lugar. Es posible que estos dinosaurios no hayan interactuado en absoluto."},
     "voteConfirm":{"en": "If this is how you interpret the evidence, click VOTE below.",
-                   "es": "ESP<If this is how you interpret the evidence, click VOTE below.>"},
+                   "es": "Si esta es tu interpretación de las pruebas, haz clic en VOTAR a continuación."},
     "duelSubText":{"en": "They were fighting and died in battle.",
-                   "es": "This is duel subtext, but in spanish."},
+                   "es": "Murieron peleando."},
     "dinnerSubText":{"en": "They died at different times from different causes.",
-                     "es": "this is dinner subtext but in spanish"},
+                     "es": "Murieron en diferentes momentos por causas distintas."},
     "disasterSubText":{"en": "They were both killed in a flood event.",
-                       "es": "this is disaster subtext but in spanish"},
+                       "es": "Ambos murieron en una inundación"},
     "startOverHero": {"en": "The real answer is:",
-                      "es" : "the real answer is:"},
+                      "es" : "La verdadera respuesta es:"},
     "startOverSubHead": {"en": "We don't know what happened yet.",
-                         "es": ""},
+                         "es": "Todavía no sabemos lo que pasó."},
     "startOverText0":{"en": "Our paleontologists are uncovering new evidence every day.",
-                      "es": ""},
+                      "es": "Nuestros paleontólogos descubren nuevas pruebas cada día."},
     "startOverText1":{"en": " They may revise or discard a hypothesis when it no longer fits the fossil evidence.",
-                      "es": ""},
+                      "es": "Pueden revisar o descartar una hipótesis cuando ya no se ajusta a la evidencia fósil."},
     "startOverText2":{"en": "Stay tuned for updates!",
-                      "es": ""}
+                      "es": "¡Estén atentos a las actualizaciones!"}
 }
 
 function styler (icon) {
@@ -441,7 +441,7 @@ function Main ({state, setState}){
 function Header({state, setState}){
     const headerText = () => {
         switch(state.page){
-        case 'home': return (locales.heroText[state.locale]);
+        case 'home': return (locales.heroText[state.locale].toUpperCase());
         case 'content': return(locales[state.vote][state.locale].toUpperCase());
         case 'startOver': return(locales.startOverHero[state.locale].toUpperCase())
         case 'video': return("vote logged!")
