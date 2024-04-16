@@ -98,11 +98,11 @@ const locales = {
     "startOverSubHead": {"en": "We don't know what happened yet.",
                          "es": "Todavía no sabemos lo que pasó."},
     "startOverText0":{"en": "Our paleontologists are uncovering new evidence every day.",
-                      "es": "Nuestros paleontólogos descubren nuevas pruebas cada día."},
+                      "es": "Nuestros paleontólogos estan descubriendo nuevas pruebas cada día "},
     "startOverText1":{"en": " They may revise or discard a hypothesis when it no longer fits the fossil evidence.",
-                      "es": "Pueden revisar o descartar una hipótesis cuando ya no se ajusta a la evidencia fósil."},
+                      "es": "y pueden revisar o descartar una hipótesis cuando ya no se ajusta a la evidencia fósil."},
     "startOverText2":{"en": "Stay tuned for updates!",
-                      "es": "¡Estén atentos a las actualizaciones!"}
+                      "es": "¡Esté atento a las actualizaciones!"}
 }
 
 function styler (icon) {
