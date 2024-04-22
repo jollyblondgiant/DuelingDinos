@@ -287,7 +287,7 @@ function VideoPage({state, setState}){
         autoplay: true,
         controls: false,
         responsive: true,
-        muted: true,
+        muted: false,
         fluid: true,
         sources: [{
             src: video(),
